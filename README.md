@@ -130,8 +130,8 @@ openssl req -new -x509 -days 365 \
 chmod 600 server.key
 chmod 644 server.crt
 
-chown 999:999 /CAMINHO_COMPLETO/server.key
-chmod 600 /CAMINHO_COMPLETO/server.key
+chown 999:999 </CAMINHO_COMPLETO>/server.key
+chmod 600 </CAMINHO_COMPLETO>/server.key
 ```
 
 2.  Atualizar seu docker-compose.yml
@@ -172,7 +172,7 @@ docker compose up -d
 Criação do usuário de Leitura
 Acesse o PostgreSQL como superusuário ou com um usuário com permissão para criar roles:
 
-```docker exec -it <NOME_CONTAINER> psql -U <USUARIO_DO_BANCO> -d <DATABASE>```
+```docker exec -it postgres_container psql -U <USUARIO_DO_BANCO> -d <DATABASE>```
 
 Dentro do prompt do PostgreSQL:
 
@@ -191,11 +191,24 @@ GRANT SELECT ON <TABLE> TO <USUARIO_DO_BANCO>;
 9. Backup
 ```
 mkdir -p /root/backups/tabela-fipe
-docker exec -t <NOME_CONTAINER> pg_dump -U <USUARIO_DO_BANCO> -d <DATABASE> -F c -f /tmp/tabela-fipe.dump
+docker exec -t postgres_container pg_dump -U <USUARIO_DO_BANCO> -d <DATABASE> -F c -f /tmp/tabela-fipe.dump
 docker cp postgres_container:/tmp/tabela-fipe.dump /root/backups/tabela-fipe/
 ```
 
-10. Monitoramento
+10. Restaurar backup
+Copiar o arquivo .dump da VPS para dentro do container
+
+```
+docker cp /root/backups/tabela-fipe/tabela-fipe.dump postgres_container:/tmp/tabela-fipe.dump
+```
+
+Restaurar o backup dentro do container
+
+```
+docker exec -t postgres_container pg_restore -U <USUARIO_DO_BANCO> -d tabela-fipe /tmp/tabela-fipe.dump
+```
+
+12. Monitoramento
 Verificar uso de CPU, memória e espaço em disco
 Para monitorar o consumo de recursos do sistema:
 
@@ -213,7 +226,7 @@ docker stats  # Exibe uso de CPU/memória por container
 docker ps -a  # Lista containers em execução e parados
 ```
 
-11. Considerações Finais
+12. Considerações Finais
 Esse procedimento garante um PostgreSQL funcional e seguro rodando em um ambiente Docker no Rocky Linux. Caso precise de persistência dos dados, o volume pgdata garantirá que os dados permaneçam após reinicializações do container, caso necessário, com o backup realizado, você consegue fazer a recuperação se dados forem perdidos.
 
 Alunos:
