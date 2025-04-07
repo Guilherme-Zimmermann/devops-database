@@ -208,7 +208,7 @@ Restaurar o backup dentro do container
 docker exec -t postgres_container pg_restore -U <USUARIO_DO_BANCO> -d tabela-fipe /tmp/tabela-fipe.dump
 ```
 
-12. Monitoramento
+11. Monitoramento
 Verificar uso de CPU, memória e espaço em disco
 Para monitorar o consumo de recursos do sistema:
 
