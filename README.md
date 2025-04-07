@@ -103,6 +103,7 @@ A equipe pode acessar o PostgreSQL remotamente usando:
 ```psql -h <IP_DA_VPS> -U <USER_DO_BANCO> -d <DATABASE>```
 
 Ou usando clientes como DBeaver ou PgAdmin, apontando para <IP_DA_VPS> na porta 5432.
+
 7. Manutenção e Gerenciamento
 Verificar logs do PostgreSQL
 ```docker logs postgres_container```
