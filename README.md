@@ -1,15 +1,19 @@
 # Documentação: Deploy de PostgreSQL em VPS com Docker (Rocky Linux)
 
 1. Introdução
-Este documento fornece um guia detalhado para configurar um servidor PostgreSQL em uma VPS rodando Rocky Linux utilizando Docker e Docker Compose.
-2. Requisitos
-VPS rodando *Rocky Linux*
+Este documento descreve o processo completo para provisionamento e configuração de um servidor de banco de dados PostgreSQL em um container Docker. A infraestrutura utilizada é uma VPS Linux com Rocky Linux, 4GB de RAM, 50GB de armazenamento e 1 núcleo de CPU. O objetivo é criar um ambiente seguro, persistente e com capacidade de testes de integridade, segurança e restauração de dados.
 
-Acesso root ou privilégios sudo
+***ATENÇÃO***
+Existem placeholders nesse documento, textos que estiverem dessa forma <EXEMPLO>, entenda como placeholder e o substitua pelo valor correto da sua vps
+
+3. Requisitos
+- VPS rodando *Rocky Linux*
+- Acesso root ou privilégios sudo
 
 Firewall configurado corretamente
 Acessando a VPS
 ```Abra o seu bash e insira:  ssh root@<seu ip>```
+Após isso a senha da sua vps
 
 3. Instalação do Docker e Docker Compose
 ```
@@ -38,9 +42,9 @@ Adicione as variáveis de ambiente:
 Entenda todos os 3 valores como exemplos e substitua-os pelos valores verdadeiros
 
 ```
-POSTGRES_USER={substitua}
-POSTGRES_PASSWORD={substitua}
-POSTGRES_DB={substitua}
+POSTGRES_USER=<SUBSTITUA>
+POSTGRES_PASSWORD=<SUBSTITUA>
+POSTGRES_DB=<SUBSTITUA>
 ```
 
 Salve e feche (Ctrl+X, Y, Enter).
@@ -110,6 +114,8 @@ Parar e remover o container
 ```docker compose down```
 
 8. Configurar SSL simples no PostgreSQL
+- Essa configuração de SSL é apenas a nível de servidor, o cliente não precisa de um certificado para conectar ao banco. 
+   
 1.  Gerar certificado SSL (autoassinado)
 No servidor (sua VPS):
 ```mkdir -p ~/postgres-certs && cd ~/postgres-certs```
@@ -166,23 +172,30 @@ docker compose up -d
 Criação do usuário de Leitura
 Acesse o PostgreSQL como superusuário ou com um usuário com permissão para criar roles:
 
-```docker exec -it <CONTAINER> psql -U <USER> -d <DATABASE>```
+```docker exec -it <NOME_CONTAINER> psql -U <USUARIO_DO_BANCO> -d <DATABASE>```
 
 Dentro do prompt do PostgreSQL:
 
 ```
 -- Cria o usuário somente leitura
-CREATE USER <USER> WITH PASSOWORD '<PASSWORD>;
+CREATE USER <USUARIO_DO_BANCO> WITH PASSOWORD '<PASSWORD>;
 ```
 
 ```
 -- Concede acesso de leitura na tabela clientes
-GRANT CONNECT ON DATABASE <DATABASE> TO <USER>;
-GRANT USAGE ON SCHEMA public TO <USER>;
-GRANT SELECT ON <TABLE> TO <USER>;
+GRANT CONNECT ON DATABASE <DATABASE> TO <USUARIO_DO_BANCO>;
+GRANT USAGE ON SCHEMA public TO <USUARIO_DO_BANCO>;
+GRANT SELECT ON <TABLE> TO <USUARIO_DO_BANCO>;
 ```
 
-9. Monitoramento
+9. Backup
+```
+mkdir -p /root/backups/tabela-fipe
+docker exec -t <NOME_CONTAINER> pg_dump -U <USUARIO_DO_BANCO> -d <DATABASE> -F c -f /tmp/tabela-fipe.dump
+docker cp postgres_container:/tmp/tabela-fipe.dump /root/backups/tabela-fipe/
+```
+
+10. Monitoramento
 Verificar uso de CPU, memória e espaço em disco
 Para monitorar o consumo de recursos do sistema:
 
@@ -200,8 +213,8 @@ docker stats  # Exibe uso de CPU/memória por container
 docker ps -a  # Lista containers em execução e parados
 ```
 
-10. Considerações Finais
-Esse procedimento garante um PostgreSQL funcional e seguro rodando em um ambiente Docker no Rocky Linux. Caso precise de persistência dos dados, o volume pgdata garantirá que os dados permaneçam após reinicializações do container.
+11. Considerações Finais
+Esse procedimento garante um PostgreSQL funcional e seguro rodando em um ambiente Docker no Rocky Linux. Caso precise de persistência dos dados, o volume pgdata garantirá que os dados permaneçam após reinicializações do container, caso necessário, com o backup realizado, você consegue fazer a recuperação se dados forem perdidos.
 
 Alunos:
 Guilherme Will Zimmermann
