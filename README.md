@@ -57,8 +57,6 @@ Criar arquivo docker-compose.yml
 
 Adicione o seguinte conteúdo:
 ```
-version: '3.8'
-
 services:
   postgres:
     image: postgres:latest
@@ -69,10 +67,7 @@ services:
     env_file:
       - .env
     volumes:
-      - pgdata:/var/lib/postgresql/data
-
-volumes:
-  pgdata:
+      - ./pgdata:/var/lib/postgresql/data
 ```
 
 Salve e feche (Ctrl+X, Y, Enter).
@@ -139,8 +134,6 @@ chmod 600 </CAMINHO_COMPLETO>/server.key
 Atualize o docker-compose.yml do PostgreSQL para montar os certificados no container e ativar o SSL:
 
 ```
-version: '3.8'
-
 services:
   postgres:
     image: postgres:latest
@@ -151,16 +144,13 @@ services:
     env_file:
       - .env
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - ./pgdata:/var/lib/postgresql/data
       - ./postgres-certs/server.crt:/var/lib/postgresql/server.crt:ro
       - ./postgres-certs/server.key:/var/lib/postgresql/server.key:ro
     command: >
       postgres -c ssl=on
                -c ssl_cert_file=/var/lib/postgresql/server.crt
                -c ssl_key_file=/var/lib/postgresql/server.key
-
-volumes:
-  pgdata:
 ```
 
 3.  Subir o container com SSL
