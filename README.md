@@ -222,11 +222,7 @@ Esse procedimento garante um PostgreSQL funcional e seguro rodando em um ambient
 
 Alunos:
 Guilherme Will Zimmermann,
-
 Luiz Gustavo Kolben,
-
 Pablo Pereira,
-
 João Vitor Alencar,
-
 Joenerson.
