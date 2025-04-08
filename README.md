@@ -221,8 +221,12 @@ docker ps -a  # Lista containers em execução e parados
 Esse procedimento garante um PostgreSQL funcional e seguro rodando em um ambiente Docker no Rocky Linux. Caso precise de persistência dos dados, o volume pgdata garantirá que os dados permaneçam após reinicializações do container, caso necessário, com o backup realizado, você consegue fazer a recuperação se dados forem perdidos.
 
 Alunos:
-Guilherme Will Zimmermann
-Luiz Gustavo Kolben
-Pablo Pereira
-João Vitor Alencar
-Joenerson
+Guilherme Will Zimmermann,
+
+Luiz Gustavo Kolben,
+
+Pablo Pereira,
+
+João Vitor Alencar,
+
+Joenerson.
